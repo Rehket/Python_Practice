@@ -35,9 +35,12 @@ def fizzbuzz(number):
 # https://stackoverflow.com/questions/12448175/confused-about-str-in-python
 
 
-# A note regarding repr(),
+# A note regarding repr():
 #   It can be overload on object to define the string representation of that object when printed with .__repr__().
-#   
+#   In python 2, the module it resides in is repr. In python 3, it is reprlib.
+#   Since repr objects can be defied for objects, it is useful for imposing limits on the size of resulting string
+#   representations of objects.
+
 
 # Main entry point.
 def main():
