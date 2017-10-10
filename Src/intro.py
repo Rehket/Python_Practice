@@ -1,4 +1,14 @@
 # Really need to refresh python, holy crap.
+import argparse
+
+
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('integers', metavar='N', type=int, nargs='+',
+                   help='an integer for the accumulator')
+
+args = parser.parse_args()
+print(args)
 
 print('Hello World!' + '\n')
 
@@ -51,6 +61,9 @@ def main():
     println_repr('Notice how ween repr is used, the single quotes are included. :P')
     println_str('When str is used, they are not. :D')
 
+    # bla = input("Put some text here: ")
+
+    # println('Thanks for the ' + bla)
 
 main()
 
