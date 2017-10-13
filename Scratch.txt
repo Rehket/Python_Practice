@@ -1,0 +1,12 @@
+
+def decompress_image(img_path, dest_path):
+    print("Hallo")
+    if len(temp_data_list) == len(temp_image_list):
+        count = 0
+        for img_p in temp_image_list:
+            parsed_data = get_data_from_text(os.path.join(my_data_path, temp_data_list[count]))
+            path_list.append((os.path.join(my_images_path, img_p), parsed_data[8], parsed_data[13], parsed_data[14],
+                              parsed_data[15]))
+            count += 1
+            print(str(parsed_data) + "\n")
+            print(str(img_p) + "\n")

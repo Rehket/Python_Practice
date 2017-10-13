@@ -11,6 +11,7 @@
 import bz2
 import argparse
 import os
+import json
 
 
 # The user will specify the directory containing the image data and associated metadata.
@@ -51,70 +52,70 @@ def get_data_from_text(path):
 # Get the Image paths, then get the data once we know what paths were are accessing.
 # Got some of the file processing info from:
 # https://stackoverflow.com/questions/3277503/how-do-i-read-a-file-line-by-line-into-a-list
-def get_image_paths():
+def get_image_paths(tags):
+    path_list = []
+    # The path to all the images
+    images_path = os.path.join(a.input_dir, dir_list(a.input_dir)[1])
+
+    # print(os.listdir(images_path))
+    for item in os.listdir(images_path):
+        my_images_path = os.path.join(images_path, item)
+
+        my_images_list = os.listdir(my_images_path)
+        # Get the Front Images
+        for i in filter_by_contents(my_images_list, tags):
+            path_list.append(i)
+
+    return path_list
+
+def get_data_paths(tags):
     path_list = []
     data_path = os.path.join(a.input_dir, dir_list(a.input_dir)[0])
     # The path to all the data
     data_path = os.path.join(data_path, os.listdir(data_path)[0])
-    # The path to all the images
-    images_path = os.path.join(a.input_dir, dir_list(a.input_dir)[1])
-
-    print(os.listdir(images_path))
-    for item in os.listdir(images_path):
-        my_images_path = os.path.join(images_path, item)
+    # Get the data for the front images
+    for item in os.listdir(data_path):
         my_data_path = os.path.join(data_path, item)
-        myImages_list = os.listdir(my_images_path)
-        myData_list = os.listdir(my_data_path)
-        print(my_data_path)
-        image_data_pairs = []
-        temp_image_list = []
-        temp_data_list = []
-        # Get the Front Images
-        for i in filter_by_contents(myImages_list, ["_fa", "_fb"]):
-            temp_image_list.append(i)
-        # Get the data for the front images
-        for i in filter_by_contents(myData_list, ["_fa", "_fb"]):
-            temp_data_list.append(i)
-        # if we have the same amount  of data entries as we have for images, we are good to go.
-        if len(temp_data_list) == len(temp_image_list):
-            count = 0
-            for img_p in temp_image_list:
-                parsed_data = get_data_from_text(os.path.join(my_data_path, temp_data_list[count]))
-                # print(parsed_data)
-                path_list.append((os.path.join(my_images_path, img_p), parsed_data[8], parsed_data[13], parsed_data[14], parsed_data[15]))
-                count += 1
+        my_data_list = os.listdir(my_data_path)
+
+        for i in filter_by_contents(my_data_list, tags):
+            path_list.append(i)
+
     return path_list
 
-def decompress_image(img_path, dest_path):
-    print("Hallo")
-
-
 def main():
-    print(dir_list(a.input_dir))
-    images_data_paths = get_image_paths()
-    image_dir = "C:/Workspace/colorferet/colorferet/dvd1/data/images/00001"
-    images = os.listdir(image_dir)
-    print(images)
+    # print(dir_list(a.input_dir))
+    tags = ["_fa", "_fb"]
+    images_path = get_image_paths(tags)
+    #image_dir = "C:/Workspace/colorferet/colorferet/dvd1/data/images/00001"
+    #images = os.listdir(image_dir)
+    #print(images)
+
+    print(get_image_paths(tags))
+    print(get_data_paths(tags))
+
+    print(len(get_image_paths(tags)))
+    print(len(get_data_paths(tags)))
 
     # From https://stackoverflow.com/questions/16963352/decompress-bz2-files
     # make sure that there are images in the list.
-    assert (len(images_data_paths) > 0), "No Image in folder..."
+    assert (len(images_path) > 0), "No Image in folder..."
     counter = 1
-    for im in images_data_paths:
+    for im in images_path:
         counter += 1
         # Set up input image and stuff
-        bz_image_path = im[0]
+        # bz_image_path = im[0]
 
         # Setup output image format and stuff
-        ppm_image_path = os.path.join(a.out_dir, str(counter) +".ppm")
-        print(bz_image_path + " to " + ppm_image_path)
+        # ppm_image_path = os.path.join(a.out_dir, str(counter) +".ppm")
+        # print(bz_image_path + " to " + ppm_image_path)
 
 
 
-        with open(ppm_image_path, 'wb') as new_file, bz2.BZ2File(bz_image_path, 'rb') as file:
+        # with open(ppm_image_path, 'wb') as new_file, bz2.BZ2File(bz_image_path, 'rb') as file:
             # What does the 100*1024 do?
-            for data in iter(lambda: file.read(100 * 1024), b''):
-                new_file.write(data)
+        #     for data in iter(lambda: file.read(100 * 1024), b''):
+         #       new_file.write(data)
 
 
 
