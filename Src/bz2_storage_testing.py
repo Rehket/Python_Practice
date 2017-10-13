@@ -6,7 +6,7 @@
 
 
 
-# TODO: Set up xml parser and cv2image tools
+# TODO: Set up json parser and cv2image tools
 
 import bz2
 import argparse
@@ -19,12 +19,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--input_dir", required=True, help="Path to folder containing image and ground_truths directories.")
 parser.add_argument("--out_dir", required=True, help="Path to folder where the unzipped images will be placed.")
 
-
 a = parser.parse_args()
 
 
 # Method to count sub-directories taken from :
 # https://stackoverflow.com/questions/19747408/how-get-number-of-subfolders-and-folders-using-python-os-walks
+# TODO: Is this really necessary?
 def dir_list(path):
     dirs = os.listdir(path)
     assert (dirs.__contains__("ground_truths") and dirs.__contains__("images")), \
@@ -39,6 +39,7 @@ def filter_by_contents(seq, value = []):
             if v in el:
                 yield el
 
+# TODO: Explain what is happening here better
 def get_data_from_text(path):
     my_data = []
     with open(path) as f:
@@ -48,6 +49,7 @@ def get_data_from_text(path):
         text=text_data.split("=")
         my_data.append((text[0], text[1]))
     return my_data
+
 
 # Get the Image paths, then get the data once we know what paths were are accessing.
 # Got some of the file processing info from:
@@ -68,18 +70,25 @@ def get_image_paths(tags):
 
     return path_list
 
+
 def get_data_paths(tags):
     path_list = []
     data_path = os.path.join(a.input_dir, dir_list(a.input_dir)[0])
+
     # The path to all the data
     data_path = os.path.join(data_path, os.listdir(data_path)[0])
+
     # Get the data for the front images
     for item in os.listdir(data_path):
+
+        # The path to the data in the subfolder
         my_data_path = os.path.join(data_path, item)
+
         my_data_list = os.listdir(my_data_path)
 
+        # TODO: Maybe add an example of what this actually does.
         for i in filter_by_contents(my_data_list, tags):
-            path_list.append(i)
+            path_list.append(os.path.join(my_data_path, i))
 
     return path_list
 
@@ -87,15 +96,13 @@ def main():
     # print(dir_list(a.input_dir))
     tags = ["_fa", "_fb"]
     images_path = get_image_paths(tags)
-    #image_dir = "C:/Workspace/colorferet/colorferet/dvd1/data/images/00001"
-    #images = os.listdir(image_dir)
-    #print(images)
+    data_paths = get_data_paths(tags)
 
-    print(get_image_paths(tags))
-    print(get_data_paths(tags))
+    print(images_path)
+    print(data_paths)
 
-    print(len(get_image_paths(tags)))
-    print(len(get_data_paths(tags)))
+    print(len(images_path))
+    print(len(data_paths))
 
     # From https://stackoverflow.com/questions/16963352/decompress-bz2-files
     # make sure that there are images in the list.
