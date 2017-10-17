@@ -6,7 +6,7 @@
 
 
 
-# TODO: Set up json parser and cv2image tools
+# TODO: Remove Color Feret stuff and focus on bz2 here.
 
 import bz2
 import argparse
